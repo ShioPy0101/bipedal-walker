@@ -44,6 +44,16 @@ python record_bipedal_walker.py
 xvfb-run -a python record_bipedal_walker.py
 ```
 
+## venv作成
+
+```bash
+rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install -r requirements.txt
+```
+
 ## 出力
 
 - 学習済みモデル: `ppo_bipedalwalker_result/final_model.zip`
