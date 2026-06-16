@@ -46,6 +46,10 @@ class RewardConfig:
     torque_penalty_coef: float = 0.003
     alive_bonus: float = 0.0
     forward_reward_coef: float = 3.0
+    step_penalty: float = 0.01
+    goal_bonus: float = 100.0
+    speed_bonus_scale: float = 50.0
+    goal_x: float = 300.0
 
 
 class BipedalRewardWrapper(gym.Wrapper):
@@ -54,6 +58,7 @@ class BipedalRewardWrapper(gym.Wrapper):
         self.reward_config = reward_config
         self.episode_max_x = float("-inf")
         self.episode_steps = 0
+        self.max_episode_steps = getattr(getattr(env, "spec", None), "max_episode_steps", 1600)
 
     def reset(self, **kwargs):
         self.episode_max_x = float("-inf")
@@ -71,28 +76,28 @@ class BipedalRewardWrapper(gym.Wrapper):
         forward_bonus = self.reward_config.forward_reward_coef * forward_progress
         torque_penalty = self.reward_config.torque_penalty_coef * np.sum(np.square(action))
         fall_penalty_value = self.reward_config.fall_penalty if terminated else 0.0
-        
-        # 速度優先の報酬設計：300mへの到達速度を最大優先
-        # 標準max_stepsは1600なので、それを基準に速度ボーナスを計算
-        distance_milestone_bonus = 0.0
-        if x_after >= 300 and x_before < 300:
-            # 到達速度に応じたボーナス：早いほど大きい
-            # 800ステップで到達 → 50ボーナス、1600ステップで到達 → 0ボーナス
-            speed_bonus = max(0, (1600 - self.episode_steps) / 1600) * 50
-            distance_milestone_bonus += 100 + speed_bonus  # ゴール達成ボーナス + 速度ボーナス
+        step_penalty = self.reward_config.step_penalty
+
+        goal_bonus_value = 0.0
+        if x_after >= self.reward_config.goal_x and x_before < self.reward_config.goal_x:
+            remaining_ratio = max(0.0, (self.max_episode_steps - self.episode_steps) / self.max_episode_steps)
+            speed_bonus = remaining_ratio * self.reward_config.speed_bonus_scale
+            goal_bonus_value = self.reward_config.goal_bonus + speed_bonus
 
         custom_reward = reward
         custom_reward += self.reward_config.alive_bonus
         custom_reward += forward_bonus
-        custom_reward += distance_milestone_bonus
+        custom_reward += goal_bonus_value
         custom_reward -= torque_penalty
         custom_reward -= fall_penalty_value
+        custom_reward -= step_penalty
 
         info["original_reward"] = reward
         info["custom_reward"] = custom_reward
         info["forward_progress"] = forward_progress
         info["forward_bonus"] = forward_bonus
-        info["distance_milestone_bonus"] = distance_milestone_bonus
+        info["goal_bonus"] = goal_bonus_value
+        info["step_penalty"] = step_penalty
         info["torque_penalty"] = torque_penalty
         info["fall_penalty"] = fall_penalty_value
         info["x_before"] = x_before

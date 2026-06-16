@@ -37,9 +37,12 @@ def train(total_timesteps: int) -> None:
 
     reward_config = RewardConfig(
         fall_penalty=40.0,
-        torque_penalty_coef=0.003,
+        torque_penalty_coef=0.002,
         alive_bonus=0.0,
-        forward_reward_coef=10.0,
+        forward_reward_coef=2.0,
+        step_penalty=0.01,
+        goal_bonus=100.0,
+        speed_bonus_scale=50.0,
     )
 
     train_env = make_train_vec_env(reward_config)
