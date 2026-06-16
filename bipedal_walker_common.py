@@ -72,13 +72,14 @@ class BipedalRewardWrapper(gym.Wrapper):
         torque_penalty = self.reward_config.torque_penalty_coef * np.sum(np.square(action))
         fall_penalty_value = self.reward_config.fall_penalty if terminated else 0.0
         
-        # 距離達成ボーナス：ゴール（300m）への進捗に応じて報酬を付与
-        # 標準ゴール報酬は300なので、それに合わせた設計
+        # 速度優先の報酬設計：300mへの到達速度を最大優先
+        # 標準max_stepsは1600なので、それを基準に速度ボーナスを計算
         distance_milestone_bonus = 0.0
-        if x_after >= 150 and x_before < 150:
-            distance_milestone_bonus += 8.0  # 中間地点ボーナス
         if x_after >= 300 and x_before < 300:
-            distance_milestone_bonus += 20.0  # ゴールボーナス
+            # 到達速度に応じたボーナス：早いほど大きい
+            # 800ステップで到達 → 50ボーナス、1600ステップで到達 → 0ボーナス
+            speed_bonus = max(0, (1600 - self.episode_steps) / 1600) * 50
+            distance_milestone_bonus += 100 + speed_bonus  # ゴール達成ボーナス + 速度ボーナス
 
         custom_reward = reward
         custom_reward += self.reward_config.alive_bonus
