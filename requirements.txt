@@ -1,0 +1,7 @@
+gymnasium[box2d]
+stable-baselines3
+torch
+numpy
+matplotlib
+pygame
+swig
