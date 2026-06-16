@@ -5,8 +5,10 @@ from pathlib import Path
 
 import gymnasium as gym
 import numpy as np
+import stable_baselines3
 from stable_baselines3 import DDPG, PPO, SAC
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
+from stable_baselines3.common.vec_env import vec_normalize as sb3_vec_normalize
 
 
 ENV_ID = "BipedalWalker-v3"
@@ -23,6 +25,19 @@ ALGORITHM_CLASSES = {
     "sac": SAC,
     "ddpg": DDPG,
 }
+
+
+def _enable_gymnasium_vecnormalize_compatibility() -> None:
+    try:
+        major_version = int(stable_baselines3.__version__.split(".", 1)[0])
+    except (AttributeError, ValueError):
+        major_version = 2
+
+    if major_version < 2:
+        sb3_vec_normalize.spaces = gym.spaces
+
+
+_enable_gymnasium_vecnormalize_compatibility()
 
 
 @dataclass(frozen=True)
