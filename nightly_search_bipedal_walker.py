@@ -63,16 +63,15 @@ def evaluate_model(model, eval_env, n_episodes: int) -> EvaluationResult:
 
     for _ in range(n_episodes):
         obs = eval_env.reset()
-        terminated = [False]
-        truncated = [False]
+        done = [False]
         total_reward = 0.0
         final_x = float("nan")
         max_x = float("-inf")
         step_count = 0
 
-        while not terminated[0] and not truncated[0]:
+        while not done[0]:
             action, _states = model.predict(obs, deterministic=True)
-            obs, reward, terminated, truncated, infos = eval_env.step(action)
+            obs, reward, done, infos = eval_env.step(action)
             info = infos[0]
             total_reward += float(reward[0])
             final_x = float(info.get("x_after", final_x))
