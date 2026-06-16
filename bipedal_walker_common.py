@@ -71,10 +71,19 @@ class BipedalRewardWrapper(gym.Wrapper):
         forward_bonus = self.reward_config.forward_reward_coef * forward_progress
         torque_penalty = self.reward_config.torque_penalty_coef * np.sum(np.square(action))
         fall_penalty_value = self.reward_config.fall_penalty if terminated else 0.0
+        
+        # 距離達成ボーナス：ゴール（300m）への進捗に応じて報酬を付与
+        # 標準ゴール報酬は300なので、それに合わせた設計
+        distance_milestone_bonus = 0.0
+        if x_after >= 150 and x_before < 150:
+            distance_milestone_bonus += 8.0  # 中間地点ボーナス
+        if x_after >= 300 and x_before < 300:
+            distance_milestone_bonus += 20.0  # ゴールボーナス
 
         custom_reward = reward
         custom_reward += self.reward_config.alive_bonus
         custom_reward += forward_bonus
+        custom_reward += distance_milestone_bonus
         custom_reward -= torque_penalty
         custom_reward -= fall_penalty_value
 
@@ -82,6 +91,7 @@ class BipedalRewardWrapper(gym.Wrapper):
         info["custom_reward"] = custom_reward
         info["forward_progress"] = forward_progress
         info["forward_bonus"] = forward_bonus
+        info["distance_milestone_bonus"] = distance_milestone_bonus
         info["torque_penalty"] = torque_penalty
         info["fall_penalty"] = fall_penalty_value
         info["x_before"] = x_before
