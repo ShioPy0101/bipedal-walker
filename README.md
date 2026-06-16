@@ -20,6 +20,12 @@ pip install -r requirements.txt
 python train_bipedal_walker.py --timesteps 1000000
 ```
 
+PPO / SAC / DDPG を競わせる夜間スイープ:
+
+```bash
+python nightly_search_bipedal_walker.py --timesteps 600000 --chunk-timesteps 50000 --eval-episodes 5
+```
+
 評価ログのプロット保存:
 
 ```bash

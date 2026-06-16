@@ -1,12 +1,24 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
-from stable_baselines3 import PPO
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize, VecVideoRecorder
 
-from bipedal_walker_common import BEST_NORMALIZE_PATH, RewardConfig, make_env
+from bipedal_walker_common import ALGORITHM_CLASSES, BEST_NORMALIZE_PATH, RewardConfig, make_env
+
+
+def resolve_model_source(model_path: Path, normalize_path: Path) -> tuple[str, Path, Path]:
+    metadata_path = model_path.parent / "best_trial.json"
+    if metadata_path.exists():
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        algorithm = metadata["algorithm"]
+        resolved_model_path = Path(metadata["model_path"])
+        resolved_normalize_path = Path(metadata["normalize_path"])
+        return algorithm, resolved_model_path, resolved_normalize_path
+
+    return "ppo", model_path, normalize_path
 
 
 def record_video(model_path: Path, normalize_path: Path, video_folder: Path, video_length: int) -> None:
@@ -17,8 +29,10 @@ def record_video(model_path: Path, normalize_path: Path, video_folder: Path, vid
         forward_reward_coef=3.0,
     )
 
+    algorithm, resolved_model_path, resolved_normalize_path = resolve_model_source(model_path, normalize_path)
+
     env = DummyVecEnv([lambda: make_env(reward_config, render_mode="rgb_array")])
-    env = VecNormalize.load(normalize_path, env)
+    env = VecNormalize.load(resolved_normalize_path, env)
     env.training = False
     env.norm_reward = False
 
@@ -28,10 +42,11 @@ def record_video(model_path: Path, normalize_path: Path, video_folder: Path, vid
         str(video_folder),
         record_video_trigger=lambda step: step == 0,
         video_length=video_length,
-        name_prefix="bipedal-walker-ppo",
+        name_prefix=f"bipedal-walker-{algorithm}",
     )
 
-    model = PPO.load(model_path, env=venv)
+    model_class = ALGORITHM_CLASSES[algorithm]
+    model = model_class.load(resolved_model_path, env=venv)
     obs = venv.reset()
 
     total_reward = 0.0
@@ -58,6 +73,7 @@ def record_video(model_path: Path, normalize_path: Path, video_folder: Path, vid
     print(f"累積カスタム報酬: {total_reward:.2f}")
     print(f"累積元報酬: {total_original_reward:.2f}")
     print(f"累積トルク罰則: {total_torque_penalty:.2f}")
+    print(f"使用アルゴリズム: {algorithm}")
     print(f"動画保存先: {video_folder}")
 
 

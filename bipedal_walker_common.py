@@ -5,6 +5,7 @@ from pathlib import Path
 
 import gymnasium as gym
 import numpy as np
+from stable_baselines3 import DDPG, PPO, SAC
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 
@@ -12,9 +13,16 @@ ENV_ID = "BipedalWalker-v3"
 SAVE_DIR = Path("ppo_bipedalwalker_result")
 BEST_MODEL_DIR = SAVE_DIR / "best_model"
 LOG_DIR = SAVE_DIR / "logs"
+PLOT_DIR = SAVE_DIR / "plots"
 FINAL_MODEL_PATH = SAVE_DIR / "final_model"
 FINAL_NORMALIZE_PATH = SAVE_DIR / "vecnormalize.pkl"
 BEST_NORMALIZE_PATH = BEST_MODEL_DIR / "vecnormalize.pkl"
+
+ALGORITHM_CLASSES = {
+    "ppo": PPO,
+    "sac": SAC,
+    "ddpg": DDPG,
+}
 
 
 @dataclass(frozen=True)
@@ -29,11 +37,20 @@ class BipedalRewardWrapper(gym.Wrapper):
     def __init__(self, env: gym.Env, reward_config: RewardConfig):
         super().__init__(env)
         self.reward_config = reward_config
+        self.episode_max_x = float("-inf")
+        self.episode_steps = 0
+
+    def reset(self, **kwargs):
+        self.episode_max_x = float("-inf")
+        self.episode_steps = 0
+        return self.env.reset(**kwargs)
 
     def step(self, action):
         x_before = self.unwrapped.hull.position.x
         obs, reward, terminated, truncated, info = self.env.step(action)
         x_after = self.unwrapped.hull.position.x
+        self.episode_steps += 1
+        self.episode_max_x = max(self.episode_max_x, x_after)
 
         forward_progress = x_after - x_before
         forward_bonus = self.reward_config.forward_reward_coef * forward_progress
@@ -52,6 +69,10 @@ class BipedalRewardWrapper(gym.Wrapper):
         info["forward_bonus"] = forward_bonus
         info["torque_penalty"] = torque_penalty
         info["fall_penalty"] = fall_penalty_value
+        info["x_before"] = x_before
+        info["x_after"] = x_after
+        info["episode_max_x"] = self.episode_max_x
+        info["episode_steps"] = self.episode_steps
 
         return obs, custom_reward, terminated, truncated, info
 
@@ -60,6 +81,7 @@ def prepare_output_dirs() -> None:
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
     BEST_MODEL_DIR.mkdir(parents=True, exist_ok=True)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
+    PLOT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def make_env(reward_config: RewardConfig, render_mode: str | None = None) -> gym.Env:
