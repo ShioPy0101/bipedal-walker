@@ -40,9 +40,6 @@ def train(total_timesteps: int) -> None:
         torque_penalty_coef=0.002,
         alive_bonus=0.0,
         forward_reward_coef=2.0,
-        step_penalty=0.01,
-        goal_bonus=100.0,
-        speed_bonus_scale=50.0,
     )
 
     train_env = make_train_vec_env(reward_config)
