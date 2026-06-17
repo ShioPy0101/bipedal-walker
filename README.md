@@ -12,6 +12,8 @@ sudo apt install -y swig ffmpeg xvfb
 pip install -r requirements.txt
 ```
 
+`requirements.txt` は CUDA 12.4 版の PyTorch を固定しています。既存の CPU 版が入っている場合は、`pip install -r requirements.txt` をもう一度実行して上書きしてください。
+
 ## 実行
 
 学習:
@@ -52,6 +54,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -U pip
 pip install -r requirements.txt
+```
+
+```bash
+.\.venv\Scripts\Activate.ps1
 ```
 
 ## 出力

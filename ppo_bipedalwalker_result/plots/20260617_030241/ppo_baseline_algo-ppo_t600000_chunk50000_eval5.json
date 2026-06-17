@@ -1,0 +1,36 @@
+{
+  "trial": {
+    "name": "ppo_baseline",
+    "algorithm": "ppo",
+    "total_timesteps": 600000,
+    "chunk_timesteps": 50000,
+    "eval_episodes": 5,
+    "patience_evals": 3,
+    "min_improvement": 2.0,
+    "model_kwargs": {
+      "policy": "MlpPolicy",
+      "learning_rate": 0.0003,
+      "n_steps": 2048,
+      "batch_size": 64,
+      "gamma": 0.99,
+      "gae_lambda": 0.95,
+      "clip_range": 0.2,
+      "ent_coef": 0.0,
+      "vf_coef": 0.5,
+      "max_grad_norm": 0.5,
+      "verbose": 1
+    }
+  },
+  "history": [
+    {
+      "step": 50000,
+      "metrics": {
+        "mean_reward": 138.77360180635006,
+        "std_reward": 8.617169104213467,
+        "mean_final_x": 37.98038101196289,
+        "mean_max_x": 37.98038101196289,
+        "mean_episode_length": 1600.0
+      }
+    }
+  ]
+}

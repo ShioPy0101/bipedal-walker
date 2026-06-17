@@ -1,0 +1,92 @@
+{
+  "timesteps": 600000,
+  "chunk_timesteps": 50000,
+  "eval_episodes": 5,
+  "trials": [
+    {
+      "trial": {
+        "name": "ppo_baseline",
+        "algorithm": "ppo",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.0003,
+          "n_steps": 2048,
+          "batch_size": 64,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "clip_range": 0.2,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "max_grad_norm": 0.5,
+          "verbose": 1
+        }
+      },
+      "history": [
+        {
+          "step": 50000,
+          "metrics": {
+            "mean_reward": -35.209947288699915,
+            "std_reward": 7.127867144621929,
+            "mean_final_x": 5.136726570129395,
+            "mean_max_x": 5.182862281799316,
+            "mean_episode_length": 1600.0
+          }
+        }
+      ]
+    },
+    {
+      "trial": {
+        "name": "sac_balanced",
+        "algorithm": "sac",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.0003,
+          "buffer_size": 300000,
+          "learning_starts": 10000,
+          "batch_size": 256,
+          "tau": 0.02,
+          "gamma": 0.99,
+          "train_freq": 1,
+          "gradient_steps": 1,
+          "ent_coef": "auto",
+          "verbose": 1
+        }
+      },
+      "history": []
+    },
+    {
+      "trial": {
+        "name": "ddpg_conservative",
+        "algorithm": "ddpg",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.001,
+          "buffer_size": 300000,
+          "learning_starts": 10000,
+          "batch_size": 256,
+          "tau": 0.02,
+          "gamma": 0.99,
+          "train_freq": 1,
+          "gradient_steps": 1,
+          "verbose": 1
+        }
+      },
+      "history": []
+    }
+  ]
+}

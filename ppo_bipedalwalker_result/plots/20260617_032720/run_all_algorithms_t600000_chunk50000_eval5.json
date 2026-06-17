@@ -1,0 +1,112 @@
+{
+  "timesteps": 600000,
+  "chunk_timesteps": 50000,
+  "eval_episodes": 5,
+  "trials": [
+    {
+      "trial": {
+        "name": "ppo_baseline",
+        "algorithm": "ppo",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.0003,
+          "n_steps": 2048,
+          "batch_size": 64,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "clip_range": 0.2,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "max_grad_norm": 0.5,
+          "verbose": 1
+        }
+      },
+      "history": [
+        {
+          "step": 50000,
+          "metrics": {
+            "mean_reward": 221.32093616104686,
+            "std_reward": 123.95148059391805,
+            "mean_final_x": 14.136239051818848,
+            "mean_max_x": 14.136408615112305,
+            "mean_episode_length": 821.0
+          }
+        },
+        {
+          "step": 100000,
+          "metrics": {
+            "mean_reward": 474.8653551197611,
+            "std_reward": 263.5139181293291,
+            "mean_final_x": 25.23332099914551,
+            "mean_max_x": 25.23332099914551,
+            "mean_episode_length": 454.2
+          }
+        },
+        {
+          "step": 150000,
+          "metrics": {
+            "mean_reward": 1209.6787041840028,
+            "std_reward": 577.7375426892593,
+            "mean_final_x": 51.392570114135744,
+            "mean_max_x": 51.392570114135744,
+            "mean_episode_length": 876.8
+          }
+        }
+      ]
+    },
+    {
+      "trial": {
+        "name": "sac_balanced",
+        "algorithm": "sac",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.0003,
+          "buffer_size": 300000,
+          "learning_starts": 10000,
+          "batch_size": 256,
+          "tau": 0.02,
+          "gamma": 0.99,
+          "train_freq": 1,
+          "gradient_steps": 1,
+          "ent_coef": "auto",
+          "verbose": 1
+        }
+      },
+      "history": []
+    },
+    {
+      "trial": {
+        "name": "ddpg_conservative",
+        "algorithm": "ddpg",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.001,
+          "buffer_size": 300000,
+          "learning_starts": 10000,
+          "batch_size": 256,
+          "tau": 0.02,
+          "gamma": 0.99,
+          "train_freq": 1,
+          "gradient_steps": 1,
+          "verbose": 1
+        }
+      },
+      "history": []
+    }
+  ]
+}

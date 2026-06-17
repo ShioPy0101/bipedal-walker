@@ -1,0 +1,5 @@
+{
+  "timesteps": 600000,
+  "chunk_timesteps": 50000,
+  "eval_episodes": 5
+}

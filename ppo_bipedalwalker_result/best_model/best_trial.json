@@ -1,0 +1,13 @@
+{
+  "trial_name": "ppo_baseline",
+  "algorithm": "ppo",
+  "model_path": "ppo_bipedalwalker_result\\best_model\\best_model.zip",
+  "normalize_path": "ppo_bipedalwalker_result\\best_model\\vecnormalize.pkl",
+  "metrics": {
+    "mean_reward": 464.6456397247035,
+    "std_reward": 5.390825006688138,
+    "mean_final_x": 88.09408874511719,
+    "mean_max_x": 88.09408874511719,
+    "mean_episode_length": 1569.8
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "timesteps": 600000,
+  "chunk_timesteps": 50000,
+  "eval_episodes": 5,
+  "trials": [
+    {
+      "trial": {
+        "name": "ppo_baseline",
+        "algorithm": "ppo",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.0003,
+          "n_steps": 2048,
+          "batch_size": 64,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "clip_range": 0.2,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "max_grad_norm": 0.5,
+          "verbose": 1
+        }
+      },
+      "history": [
+        {
+          "step": 50000,
+          "metrics": {
+            "mean_reward": 274.31459541255606,
+            "std_reward": 4.799122766762777,
+            "mean_final_x": 55.174112701416014,
+            "mean_max_x": 55.174112701416014,
+            "mean_episode_length": 1600.0
+          }
+        },
+        {
+          "step": 100000,
+          "metrics": {
+            "mean_reward": 251.00535362670198,
+            "std_reward": 173.19354812764772,
+            "mean_final_x": 63.800316619873044,
+            "mean_max_x": 63.800316619873044,
+            "mean_episode_length": 1236.4
+          }
+        },
+        {
+          "step": 150000,
+          "metrics": {
+            "mean_reward": 451.71883871080354,
+            "std_reward": 8.610413724788218,
+            "mean_final_x": 85.95460968017578,
+            "mean_max_x": 85.95460968017578,
+            "mean_episode_length": 1566.0
+          }
+        },
+        {
+          "step": 200000,
+          "metrics": {
+            "mean_reward": 454.79367085192354,
+            "std_reward": 1.0954017741529165,
+            "mean_final_x": 88.7066421508789,
+            "mean_max_x": 88.7066421508789,
+            "mean_episode_length": 1441.2
+          }
+        },
+        {
+          "step": 250000,
+          "metrics": {
+            "mean_reward": 451.9513048108667,
+            "std_reward": 2.808378654866024,
+            "mean_final_x": 88.6920379638672,
+            "mean_max_x": 88.6920379638672,
+            "mean_episode_length": 1421.2
+          }
+        },
+        {
+          "step": 300000,
+          "metrics": {
+            "mean_reward": 350.4400678962469,
+            "std_reward": 199.87315898383497,
+            "mean_final_x": 75.15235137939453,
+            "mean_max_x": 75.15235137939453,
+            "mean_episode_length": 1204.2
+          }
+        }
+      ]
+    },
+    {
+      "trial": {
+        "name": "sac_balanced",
+        "algorithm": "sac",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.0003,
+          "buffer_size": 300000,
+          "learning_starts": 10000,
+          "batch_size": 256,
+          "tau": 0.02,
+          "gamma": 0.99,
+          "train_freq": 1,
+          "gradient_steps": 1,
+          "ent_coef": "auto",
+          "verbose": 1
+        }
+      },
+      "history": []
+    },
+    {
+      "trial": {
+        "name": "ddpg_conservative",
+        "algorithm": "ddpg",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.001,
+          "buffer_size": 300000,
+          "learning_starts": 10000,
+          "batch_size": 256,
+          "tau": 0.02,
+          "gamma": 0.99,
+          "train_freq": 1,
+          "gradient_steps": 1,
+          "verbose": 1
+        }
+      },
+      "history": []
+    }
+  ]
+}

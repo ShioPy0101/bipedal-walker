@@ -1,0 +1,84 @@
+{
+  "algorithm": "ppo",
+  "timesteps": 600000,
+  "chunk_timesteps": 50000,
+  "eval_episodes": 5,
+  "trials": [
+    {
+      "trial": {
+        "name": "ppo_baseline",
+        "algorithm": "ppo",
+        "total_timesteps": 600000,
+        "chunk_timesteps": 50000,
+        "eval_episodes": 5,
+        "patience_evals": 3,
+        "min_improvement": 2.0,
+        "model_kwargs": {
+          "policy": "MlpPolicy",
+          "learning_rate": 0.0003,
+          "n_steps": 2048,
+          "batch_size": 64,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "clip_range": 0.2,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "max_grad_norm": 0.5,
+          "verbose": 1
+        }
+      },
+      "history": [
+        {
+          "step": 50000,
+          "metrics": {
+            "mean_reward": 236.03089362953324,
+            "std_reward": 10.461601766485245,
+            "mean_final_x": 47.62333526611328,
+            "mean_max_x": 47.631689453125,
+            "mean_episode_length": 1600.0
+          }
+        },
+        {
+          "step": 100000,
+          "metrics": {
+            "mean_reward": 471.71580127158666,
+            "std_reward": 7.54978102024254,
+            "mean_final_x": 83.40670166015624,
+            "mean_max_x": 83.40670166015624,
+            "mean_episode_length": 1600.0
+          }
+        },
+        {
+          "step": 150000,
+          "metrics": {
+            "mean_reward": 450.92622675946916,
+            "std_reward": 64.12022149848055,
+            "mean_final_x": 83.39710083007813,
+            "mean_max_x": 83.40255355834961,
+            "mean_episode_length": 1585.8
+          }
+        },
+        {
+          "step": 200000,
+          "metrics": {
+            "mean_reward": 143.10444595217706,
+            "std_reward": 190.79216877923471,
+            "mean_final_x": 48.74182815551758,
+            "mean_max_x": 48.74182815551758,
+            "mean_episode_length": 852.2
+          }
+        },
+        {
+          "step": 250000,
+          "metrics": {
+            "mean_reward": 422.80790686560795,
+            "std_reward": 123.27781793619086,
+            "mean_final_x": 82.16168670654297,
+            "mean_max_x": 82.16168670654297,
+            "mean_episode_length": 1429.2
+          }
+        }
+      ]
+    }
+  ]
+}
